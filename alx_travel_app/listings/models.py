@@ -25,6 +25,13 @@ class Booking(models.Model):
     check_out = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+    @property
+    def total_amount(self):
+        """Calculate total amount based on number of nights and price per night."""
+        from datetime import timedelta
+        nights = (self.check_out - self.check_in).days
+        return self.listing.price_per_night * nights
+
     def __str__(self):
         return f"{self.user.username} booking for {self.listing.title}"
 

@@ -38,5 +38,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home),  # add this later when you define endpoints
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('', include('alx_travel_app.listings.urls')),
 ]
 

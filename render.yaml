@@ -1,0 +1,112 @@
+services:
+  - type: web
+    name: alx-travel-app
+    env: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput && python manage.py seed"
+    startCommand: "gunicorn alx_travel_app.wsgi:application"
+    envVars:
+      - key: DEBUG
+        value: False
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DB_NAME
+        fromDatabase:
+          name: alx-travel-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: alx-travel-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: alx-travel-db
+          property: password
+      - key: DB_HOST
+        fromDatabase:
+          name: alx-travel-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: alx-travel-db
+          property: port
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: redis
+          name: alx-travel-redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromService:
+          type: redis
+          name: alx-travel-redis
+          property: connectionString
+      - key: SITE_BASE_URL
+        value: https://alx-travel-app-0x02-ikjg.onrender.com
+      - key: CHAPA_SECRET_KEY
+        value: your-chapa-secret-key-here
+      - key: CHAPA_RETURN_URL
+        value: https://alx-travel-app-0x02-ikjg.onrender.com
+      - key: EMAIL_HOST
+        value: smtp.gmail.com
+      - key: EMAIL_PORT
+        value: 587
+      - key: EMAIL_USE_TLS
+        value: true
+      - key: EMAIL_HOST_USER
+        value: your-email@gmail.com
+      - key: EMAIL_HOST_PASSWORD
+        value: your-app-password
+      - key: DEFAULT_FROM_EMAIL
+        value: your-email@gmail.com
+
+  - type: worker
+    name: alx-travel-worker
+    env: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "celery -A alx_travel_app worker --loglevel=info"
+    envVars:
+      - key: DEBUG
+        value: False
+      - key: SECRET_KEY
+        fromService:
+          type: web
+          name: alx-travel-app
+          envVarKey: SECRET_KEY
+      - key: DB_NAME
+        fromDatabase:
+          name: alx-travel-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: alx-travel-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: alx-travel-db
+          property: password
+      - key: DB_HOST
+        fromDatabase:
+          name: alx-travel-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: alx-travel-db
+          property: port
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: redis
+          name: alx-travel-redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromService:
+          type: redis
+          name: alx-travel-redis
+          property: connectionString
+
+databases:
+  - name: alx-travel-db
+    plan: free
+
+  - name: alx-travel-redis
+    plan: free
