@@ -13,9 +13,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import environ
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 CHAPA_SECRET_KEY = os.getenv("CHAPA_SECRET_KEY", "")
 CHAPA_BASE_URL = os.getenv("CHAPA_BASE_URL", "https://api.chapa.co")
@@ -28,7 +25,7 @@ CHAPA_CALLBACK_PATH = os.getenv("CHAPA_CALLBACK_PATH", "/api/payments/callback/"
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load environment variables from .env file
-env = environ.Env()
+env = environ.Env(DEBUG=(bool, False))
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 
@@ -41,7 +38,7 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=True)
 
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
+ALLOWED_HOSTS = ['127.0.0.1','localhost','alx-travel-app-0x02-ikjg.onrender.com']
 
 
 # Application definition
@@ -56,7 +53,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'drf_yasg',
-    'listings',
+    'alx_travel_app.listings',
 ]
 
 MIDDLEWARE = [
@@ -73,7 +70,7 @@ MIDDLEWARE = [
 # CORS settings
 CORS_ALLOW_ALL_ORIGINS = True
 
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = 'alx_travel_app.urls'
 
 TEMPLATES = [
     {
@@ -90,7 +87,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'wsgi.application'
+WSGI_APPLICATION = 'alx_travel_app.wsgi.application'
 
 
 # Database
